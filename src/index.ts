@@ -3,7 +3,6 @@ type InternalObjectPool<T> = {
   active: T[]
 }
 
-// TODO: Prevent void type for T
 export type ObjectPool<T> = {
   take: () => T
   putBack: (object: T) => void

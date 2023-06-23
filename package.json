@@ -13,6 +13,9 @@
   },
   "author": "sajmoni",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "files": [
     "dist/"
   ],

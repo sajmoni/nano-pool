@@ -12,6 +12,7 @@
     "url": "git+https://github.com/sajmoni/nano-pool.git"
   },
   "author": "sajmoni",
+  "type": "module",
   "files": [
     "dist/"
   ],

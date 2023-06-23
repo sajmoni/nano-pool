@@ -1,57 +1,26 @@
 {
   "name": "nano-pool",
-  "license": "MIT",
   "version": "0.0.1",
   "description": "",
   "keywords": [],
-  "scripts": {
-    "build": "rm -rf dist && tsc",
-    "go": "npm run build && preview && ava",
-    "release": "npm run build && np --no-tests",
-    "test": "ava",
-    "qa": "tsc && xo --fix"
-  },
+  "license": "MIT",
   "main": "dist/index.js",
   "files": [
     "dist/"
   ],
-  "ava": {
-    "require": [
-      "esbuild-runner/register"
-    ],
-    "extensions": [
-      "ts"
-    ]
+  "scripts": {
+    "build": "tsc",
+    "go": "npm run build && preview && ava",
+    "release": "npm run build && np --no-tests",
+    "test": "vitest"
   },
-  "prettier": {
-    "trailingComma": "all",
-    "semi": false,
-    "singleQuote": true,
-    "useTabs": false,
-    "bracketSpacing": true
-  },
-  "xo": {
-    "prettier": true,
-    "env": [
-      "es2020",
-      "node"
-    ],
-    "rules": {
-      "@typescript-eslint/no-unsafe-return": "off",
-      "@typescript-eslint/no-unsafe-assignment": "off",
-      "@typescript-eslint/no-unsafe-call": "off",
-      "@typescript-eslint/restrict-template-expressions": "off",
-      "import/no-extraneous-dependencies": "off",
-      "unicorn/filename-case": "off",
-      "capitalized-comments": "off"
-    }
-  },
+  "prettier": "prettier-config-one",
   "devDependencies": {
-    "ava": "5.3.1",
-    "esbuild-runner": "2.2.2",
     "np": "8.0.4",
-    "package-preview": "4.0.0",
+    "prettier": "2.8.8",
+    "prettier-config-one": "0.1.1",
+    "tsconfig-one": "0.0.8",
     "typescript": "5.1.3",
-    "xo": "0.54.2"
+    "vitest": "0.32.2"
   }
 }

@@ -3,16 +3,12 @@ type InternalObjectPool<T> = {
   active: T[]
 }
 
-export type ObjectPool<T> = {
-  get: () => T
-  release: (object: T) => void
-  releaseAll: () => void
-}
+export type ObjectPool<T> = ReturnType<typeof createObjectPool<T>>
 
 export const createObjectPool = <T>(
   size: number,
   createObject: (index: number) => T,
-): ObjectPool<T> => {
+) => {
   const objectPool: InternalObjectPool<T> = {
     inactive: [],
     active: [],
@@ -23,6 +19,9 @@ export const createObjectPool = <T>(
     objectPool.inactive.push(object)
   }
 
+  /**
+   * Returns the size of objects in and outside the pool
+   */
   const countAll = () => {
     return objectPool.inactive.length + objectPool.active.length
   }
@@ -49,7 +48,7 @@ export const createObjectPool = <T>(
 
       return object
     },
-    release: (object) => {
+    release: (object: T) => {
       const index = objectPool.active.indexOf(object)
       objectPool.active.splice(index, 1)
       objectPool.inactive.push(object)
@@ -61,5 +60,6 @@ export const createObjectPool = <T>(
 
       objectPool.active = []
     },
+    countAll,
   }
 }

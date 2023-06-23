@@ -62,6 +62,7 @@ type ObjectPool<T> = {
   get: () => T
   release: (object: T) => void
   releaseAll: () => void
+  countAll: () => number
 }
 ```
 

@@ -24,3 +24,27 @@ test('createObjectPool', () => {
   objectPool.releaseAll()
   expect(objectPool.get()).toEqual({ id: 2, x: 0, y: 0 })
 })
+
+test('No more objects in pool - dev', () => {
+  // @ts-expect-error
+  import.meta.env.MODE = 'development'
+
+  // Throw an error
+  const objectPool = createObjectPool(1, (index) => {
+    return createObject(index)
+  })
+  expect(objectPool.get()).toEqual({ id: 0, x: 0, y: 0 })
+  expect(objectPool.get).toThrowError()
+})
+
+test('No more objects in pool - prod', () => {
+  // @ts-expect-error
+  import.meta.env.MODE = 'production'
+
+  // Create a new object
+  const objectPool = createObjectPool(1, (index) => {
+    return createObject(index)
+  })
+  expect(objectPool.get()).toEqual({ id: 0, x: 0, y: 0 })
+  expect(objectPool.get()).toEqual({ id: 1, x: 0, y: 0 })
+})

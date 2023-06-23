@@ -23,13 +23,26 @@ export const createObjectPool = <T>(
     objectPool.inactive.push(object)
   }
 
+  const countAll = () => {
+    return objectPool.inactive.length + objectPool.active.length
+  }
+
   return {
     get: () => {
-      const object = objectPool.inactive.pop()
+      let object = objectPool.inactive.pop()
 
       // No more objects in the pool
       if (!object) {
-        throw new Error('No available objects in object pool!')
+        // This relies on vite being used as bundler
+        if (import.meta.env.MODE === 'development') {
+          throw new Error(
+            'No available objects in object pool! - consider increasing the size of the pool',
+          )
+        } else {
+          // @ts-expect-error
+          console.warn('No more objects in pool - a new one was created')
+          object = createObject(countAll())
+        }
       }
 
       objectPool.active.push(object)

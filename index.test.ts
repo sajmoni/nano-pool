@@ -13,14 +13,14 @@ test('createObjectPool', () => {
     return createObject(index)
   })
 
-  const object1 = objectPool.take()
+  const object1 = objectPool.get()
   expect(object1).toEqual({ id: 4, x: 0, y: 0 })
-  expect(objectPool.take()).toEqual({ id: 3, x: 0, y: 0 })
+  expect(objectPool.get()).toEqual({ id: 3, x: 0, y: 0 })
 
-  objectPool.putBack(object1)
-  expect(objectPool.take()).toEqual({ id: 4, x: 0, y: 0 })
-  expect(objectPool.take()).toEqual({ id: 2, x: 0, y: 0 })
+  objectPool.release(object1)
+  expect(objectPool.get()).toEqual({ id: 4, x: 0, y: 0 })
+  expect(objectPool.get()).toEqual({ id: 2, x: 0, y: 0 })
 
-  objectPool.putBackAll()
-  expect(objectPool.take()).toEqual({ id: 2, x: 0, y: 0 })
+  objectPool.releaseAll()
+  expect(objectPool.get()).toEqual({ id: 2, x: 0, y: 0 })
 })

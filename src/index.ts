@@ -4,9 +4,9 @@ type InternalObjectPool<T> = {
 }
 
 export type ObjectPool<T> = {
-  take: () => T
-  putBack: (object: T) => void
-  putBackAll: () => void
+  get: () => T
+  release: (object: T) => void
+  releaseAll: () => void
 }
 
 export const createObjectPool = <T>(
@@ -24,11 +24,10 @@ export const createObjectPool = <T>(
   }
 
   return {
-    take: () => {
+    get: () => {
       const object = objectPool.inactive.pop()
 
-      // TODO: Not sure if this should be done here, or the function should be able to return undefined
-      // Or perhaps, there should be more items added to the pool if needed
+      // No more objects in the pool
       if (!object) {
         throw new Error('No available objects in object pool!')
       }
@@ -37,12 +36,12 @@ export const createObjectPool = <T>(
 
       return object
     },
-    putBack: (object) => {
+    release: (object) => {
       const index = objectPool.active.indexOf(object)
       objectPool.active.splice(index, 1)
       objectPool.inactive.push(object)
     },
-    putBackAll: () => {
+    releaseAll: () => {
       for (const activeObject of objectPool.active) {
         objectPool.inactive.push(activeObject)
       }

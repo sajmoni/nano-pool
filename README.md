@@ -17,6 +17,7 @@ Allows you to pre-instantiate objects and then request them from a pool
 - Tiny bundle size
 - Written in TypeScript
 - Zero dependencies
+- Adheres to the Unity game engine's naming conventions
 
 ---
 
@@ -35,16 +36,10 @@ const createObject = () => {
 
 const objectPool = createObjectPool(poolSize, createObject)
 
-const object1 = objectPool.take()
-objectPool.putBack(object1)
-objectPool.putBackAll()
+const object1 = objectPool.get()
+objectPool.release(object1)
+objectPool.releaseAll()
 ```
-
-### What happens if there are no more objects in the pool when `take` is called?
-
-In development, an error will be thrown.
-
-In production, a new object is created and added to the pool.
 
 ---
 
@@ -64,16 +59,24 @@ createObjectPool<T>(size: number, createObject: (index: number) => T): ObjectPoo
 
 ```ts
 type ObjectPool<T> = {
-  take: () => T
-  putBack: (object: T) => void
-  putBackAll: () => void
+  get: () => T
+  release: (object: T) => void
+  releaseAll: () => void
 }
 ```
 
 ### size
 
-The amount of objects to create.
+The amount of objects to create
 
 ### createObject
 
-The function that will be used to create new objects.
+The function that will be used to create new objects
+
+---
+
+### What happens if there are no more objects in the pool when `take` is called?
+
+In development, an error will be thrown.
+
+In production, a new object is created and added to the pool.

@@ -1,8 +1,10 @@
 {
   "name": "nano-pool",
   "version": "0.0.1",
-  "description": "",
-  "keywords": [],
+  "description": "A tiny TypeScript object pool",
+  "keywords": [
+    "object pool"
+  ],
   "license": "MIT",
   "main": "dist/index.js",
   "files": [

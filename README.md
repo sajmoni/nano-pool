@@ -10,18 +10,17 @@
   <img src="https://badgen.net/bundlephobia/minzip/nano-pool" />
 </div>
 
-Allows you to pre-instantiate objects of any kind.
+Allows you to pre-instantiate objects and then request them from a pool
 
 ## :sparkles: Features
 
+- Tiny bundle size
 - Written in TypeScript
 - Zero dependencies
 
 ---
 
 ## :wrench: Example usage
-
-`nano-pool` only has one export: `createObjectPool`.
 
 ```ts
 import { createObjectPool } from 'nano-pool'
@@ -51,16 +50,8 @@ In production, a new object is created and added to the pool.
 
 ## :package: Install
 
-**npm**
-
-```
+```console
 npm install nano-pool
-```
-
-**yarn**
-
-```
-yarn add nano-pool
 ```
 
 ---
@@ -72,7 +63,7 @@ createObjectPool<T>(size: number, createObject: (index: number) => T): ObjectPoo
 ```
 
 ```ts
-type ObjectPool = {
+type ObjectPool<T> = {
   take: () => T
   putBack: (object: T) => void
   putBackAll: () => void

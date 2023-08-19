@@ -35,7 +35,7 @@ export const createObjectPool = <T>(
         // This relies on vite being used as bundler
         if (import.meta.env.MODE === 'development') {
           throw new Error(
-            'No available objects in object pool! - consider increasing the size of the pool',
+            `nano-pool: No available objects in object pool. Size of pool is ${size}.`,
           )
         } else {
           // @ts-expect-error

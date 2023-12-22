@@ -48,11 +48,31 @@ export const createObjectPool = <T>(
 
       return object
     },
-    release: (object: T) => {
-      const index = objectPool.active.indexOf(object)
-      objectPool.active.splice(index, 1)
-      objectPool.inactive.push(object)
-    },
+    release:
+      import.meta.env.MODE === 'development'
+        ? (object: T) => {
+            const index = objectPool.active.indexOf(object)
+
+            if (index === -1) {
+              throw new Error(
+                `nano-pool: You tried to release an already released object: ${JSON.stringify(
+                  object,
+                )}`,
+              )
+            } else {
+              objectPool.active.splice(index, 1)
+              objectPool.inactive.push(object)
+            }
+          }
+        : (object: T) => {
+            const index = objectPool.active.indexOf(object)
+            if (index === -1) {
+              // No-op
+            } else {
+              objectPool.active.splice(index, 1)
+              objectPool.inactive.push(object)
+            }
+          },
     releaseAll: () => {
       for (const activeObject of objectPool.active) {
         objectPool.inactive.push(activeObject)

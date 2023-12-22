@@ -76,8 +76,16 @@ The function that will be used to create new objects
 
 ---
 
-### What happens if there are no more objects in the pool when `take` is called?
+### Rules
 
-In development, an error will be thrown.
+#### There are no more objects in the pool when `take` is called
 
-In production, a new object is created and added to the pool.
+In `development`: an error will be thrown.
+
+In `production`: a new object is created and added to the pool.
+
+#### An object already in the pool is released
+
+In `development`: an error will be thrown.
+
+In `production`: no-op.

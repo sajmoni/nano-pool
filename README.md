@@ -28,13 +28,13 @@ import { createObjectPool } from 'nano-pool'
 
 const poolSize = 10
 
-const createObject = () => {
-  const sprite = new Sprite()
-  sprite.scale.set(4)
-  return sprite
-}
+const createObject = () => new Sprite()
 
-const objectPool = createObjectPool(poolSize, createObject)
+const objectPool = createObjectPool(poolSize, createObject, {
+  onRelease: (sprite) => {
+    sprite.scale.set(4)
+  },
+})
 
 const object1 = objectPool.get()
 objectPool.release(object1)

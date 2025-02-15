@@ -8,6 +8,7 @@ export type ObjectPool<T> = ReturnType<typeof createObjectPool<T>>
 export const createObjectPool = <T>(
   size: number,
   createObject: (index: number) => T,
+  options?: { id?: string },
 ) => {
   const objectPool: InternalObjectPool<T> = {
     inactive: [],
@@ -35,7 +36,7 @@ export const createObjectPool = <T>(
         // This relies on vite being used as bundler
         if (import.meta.env.MODE === 'development') {
           throw new Error(
-            `nano-pool: No available objects in object pool. Size of pool is ${size}.`,
+            `nano-pool: No available objects in object pool. Id: ${options?.id ? `"${options?.id}"` : '<not set>'}, Pool size: ${size}.`,
           )
         } else {
           // @ts-expect-error
@@ -49,30 +50,30 @@ export const createObjectPool = <T>(
       return object
     },
     release:
-      import.meta.env.MODE === 'development'
-        ? (object: T) => {
-            const index = objectPool.active.indexOf(object)
+      import.meta.env.MODE === 'development' ?
+        (object: T) => {
+          const index = objectPool.active.indexOf(object)
 
-            if (index === -1) {
-              throw new Error(
-                `nano-pool: You tried to release an already released object: ${JSON.stringify(
-                  object,
-                )}`,
-              )
-            } else {
-              objectPool.active.splice(index, 1)
-              objectPool.inactive.push(object)
-            }
+          if (index === -1) {
+            throw new Error(
+              `nano-pool: You tried to release an already released object: ${JSON.stringify(
+                object,
+              )}`,
+            )
+          } else {
+            objectPool.active.splice(index, 1)
+            objectPool.inactive.push(object)
           }
-        : (object: T) => {
-            const index = objectPool.active.indexOf(object)
-            if (index === -1) {
-              // No-op
-            } else {
-              objectPool.active.splice(index, 1)
-              objectPool.inactive.push(object)
-            }
-          },
+        }
+      : (object: T) => {
+          const index = objectPool.active.indexOf(object)
+          if (index === -1) {
+            // No-op
+          } else {
+            objectPool.active.splice(index, 1)
+            objectPool.inactive.push(object)
+          }
+        },
     releaseAll: () => {
       for (const activeObject of objectPool.active) {
         objectPool.inactive.push(activeObject)

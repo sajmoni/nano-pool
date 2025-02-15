@@ -30,11 +30,17 @@ test('No more objects in pool - dev', () => {
   import.meta.env.MODE = 'development'
 
   // Throw an error
-  const objectPool = createObjectPool(1, (index) => {
-    return createObject(index)
-  })
+  const objectPool = createObjectPool(
+    1,
+    (index) => {
+      return createObject(index)
+    },
+    { id: 'sprites' },
+  )
   expect(objectPool.get()).toEqual({ id: 0, x: 0, y: 0 })
-  expect(objectPool.get).toThrowError()
+  expect(objectPool.get).toThrowError(
+    'No available objects in object pool. Id: "sprites", Pool size: 1.',
+  )
 })
 
 test('No more objects in pool - prod', () => {

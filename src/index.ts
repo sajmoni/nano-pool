@@ -5,10 +5,20 @@ type InternalObjectPool<T> = {
 
 export type ObjectPool<T> = ReturnType<typeof createObjectPool<T>>
 
+export type Options<T> = {
+  /** Improves debug output */
+  id?: string
+  /** Called when object is released back into the pool
+   *
+   * Note: This is also called when the object is created, so that any reset logic can be shared
+   */
+  onRelease?: (object: T) => void
+}
+
 export const createObjectPool = <T>(
   size: number,
   createObject: (index: number) => T,
-  options?: { id?: string },
+  options?: Options<T>,
 ) => {
   const objectPool: InternalObjectPool<T> = {
     inactive: [],
@@ -17,6 +27,9 @@ export const createObjectPool = <T>(
 
   for (let index = 0; index < size; index++) {
     const object = createObject(index)
+    if (options?.onRelease) {
+      options?.onRelease(object)
+    }
     objectPool.inactive.push(object)
   }
 
@@ -61,6 +74,9 @@ export const createObjectPool = <T>(
               )}`,
             )
           } else {
+            if (options?.onRelease) {
+              options?.onRelease(object)
+            }
             objectPool.active.splice(index, 1)
             objectPool.inactive.push(object)
           }
@@ -72,6 +88,9 @@ export const createObjectPool = <T>(
           } else {
             objectPool.active.splice(index, 1)
             objectPool.inactive.push(object)
+            if (options?.onRelease) {
+              options?.onRelease(object)
+            }
           }
         },
     releaseAll: () => {

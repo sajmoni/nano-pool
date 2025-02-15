@@ -54,7 +54,7 @@ npm install nano-pool
 ## :newspaper: API
 
 ```ts
-createObjectPool<T>(size: number, createObject: (index: number) => T): ObjectPool
+createObjectPool<T>(size: number, createObject: (index: number) => T, options?: Options): ObjectPool
 ```
 
 ```ts
@@ -63,6 +63,18 @@ type ObjectPool<T> = {
   release: (object: T) => void
   releaseAll: () => void
   countAll: () => number
+}
+```
+
+```ts
+type Options<T> = {
+  /** Improves debug output */
+  id?: string
+  /** Called when object is released back into the pool
+   *
+   * Note: This is also called when the object is created, so that any reset logic can be shared
+   */
+  onRelease?: (object: T) => void
 }
 ```
 

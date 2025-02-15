@@ -82,3 +82,21 @@ test('Release already released object - prod', () => {
   releaseSpy(item)
   expect(releaseSpy).toHaveReturned()
 })
+
+test('onRelease', () => {
+  const onRelease = vi.fn()
+  const objectPool = createObjectPool(
+    1,
+    (index) => {
+      return createObject(index)
+    },
+    {
+      onRelease,
+    },
+  )
+  expect(onRelease).toBeCalledTimes(1)
+
+  objectPool.release(objectPool.get())
+
+  expect(onRelease).toBeCalledTimes(2)
+})
